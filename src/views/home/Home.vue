@@ -4,6 +4,10 @@
       <div slot="center">导航栏</div>
     </nav-bar>
 
+    <home-swiper :banners="banners"></home-swiper>
+
+    <recommend-view :recommends="recommends"></recommend-view>
+
     <h1>首页</h1>
   </div>
 </template>
@@ -11,6 +15,8 @@
 <script>
 import NavBar from 'components/common/navbar/NavBar'
 import {getHomeMultidata} from 'network/home'
+import HomeSwiper from 'views/home/childComps/HomeSwiper.vue'
+import RecommendView from 'views/home/childComps/RecommendView.vue'
 
 export default {
   name: 'home',
@@ -21,7 +27,9 @@ export default {
     }
   },
   components:{
-    NavBar
+    NavBar,
+    HomeSwiper,
+    RecommendView
   },
   created(){
     getHomeMultidata().then( res => {
