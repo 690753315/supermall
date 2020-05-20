@@ -1,5 +1,5 @@
 <template>
-  <tab-bar>
+  <tab-bar class="tab-bar">
     <!-- 在父组件里使用子组件，并设置子组件的静态props，不需要父子组件传值没用到动态props -->
     <!-- 第一个prop为活跃时的路由path， 第二个为活跃时的字体颜色 -->
     <tab-bar-item path="/home" activeColor="lightBlue">
@@ -40,5 +40,8 @@ export default {
 </script>
 
 <style>
-
+  .tab-bar{
+    /* 防止下滑被商品列表挡住 */
+    z-index: 9;
+  }
 </style>

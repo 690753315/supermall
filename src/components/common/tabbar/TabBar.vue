@@ -16,6 +16,10 @@ export default {
 </script>
 
 <style>
+  :root{
+    --tab-bar-height: 49px;
+  }
+
   #tabbar{
     /* 子元素等宽 */
     display: flex;
@@ -30,7 +34,7 @@ export default {
 
     background-color: #f6f6f6;
     /* tabbar通常为49px */
-    height: 49px;
+    height: var(--tab-bar-height);
     box-shadow: 0 -3px 5px rgba(100, 100, 100, 0.1);
   }
 </style>

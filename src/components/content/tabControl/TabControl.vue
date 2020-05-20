@@ -30,6 +30,9 @@ export default {
   methods:{
     itemClick(index){
       this.currentIndex = index
+
+      // 子组件向父组件传值
+      this.$emit('itemClick', index)
     }
   }
 }
@@ -50,6 +53,9 @@ export default {
     top: var(--nav-bar-height);
 
     background-color: var(--color-background);
+
+    /* 防止上滑被商品列表挡住 */
+    z-index: 9;
   }
 
   .tab-control-item{
