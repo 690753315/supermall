@@ -4,18 +4,20 @@
       <div slot="center">导航栏</div>
     </nav-bar>
 
-    <!-- 用props 父组件给子组件动态传值 -->
-    <home-swiper :banners="banners"></home-swiper>
+    <scroll class="scroll">
+      <!-- 用props 父组件给子组件动态传值 -->
+      <home-swiper :banners="banners"></home-swiper>
 
-    <recommend-view :recommends="recommends"></recommend-view>
+      <recommend-view :recommends="recommends"></recommend-view>
 
-    <feature-view></feature-view>
+      <feature-view></feature-view>
 
-    <!-- @itemClick="itemClick" 要写在对应的tab-control标签上， 不能写到其他标签上(比如说goods-list) -->
-    <tab-control :titles="tabControlTitles" @itemClick="itemClick"></tab-control>
+      <!-- @itemClick="itemClick" 要写在对应的tab-control标签上， 不能写到其他标签上(比如说goods-list) -->
+      <tab-control :titles="tabControlTitles" @itemClick="itemClick"></tab-control>
 
-    <!-- 传递要显示的商品列表的数据给子组件 -->
-    <goods-list :goods="showGoods"></goods-list>
+      <!-- 传递要显示的商品列表的数据给子组件 -->
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
 
   </div>
 </template>
@@ -35,6 +37,8 @@
 
   // 商品列表
   import GoodsList from 'components/content/goods/GoodsList'
+
+  import Scroll from 'components/common/scroll/Scroll'
 
   // 网络请求
   import {getHomeMultidata, getHomeGoods} from 'network/home'
@@ -76,6 +80,7 @@
       FeatureView,
       TabControl,
       GoodsList,
+      Scroll
     },
     computed:{
       // tabControl显示的类型改变时
@@ -137,6 +142,10 @@
     padding-top: var(--nav-bar-height);
     /* tab-bar高度加上tab-bar的box-shadow高度，不设置商品列表的底部会被tab-bar挡住 */
     padding-bottom: calc( var(--tab-bar-height) + 3px);
+
+    position: relative;
+
+    height: 100vh;
   }
 
   .home-nav-bar{
@@ -152,5 +161,14 @@
     right: 0;
 
     z-index: 9;
+  }
+
+  .scroll{
+    position: absolute;
+    /* top: 44px;
+    bottom: 49px;
+
+    left: 0;
+    right: 0; */
   }
 </style>
