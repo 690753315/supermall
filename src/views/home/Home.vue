@@ -38,6 +38,7 @@
   // 商品列表
   import GoodsList from 'components/content/goods/GoodsList'
 
+  //
   import Scroll from 'components/common/scroll/Scroll'
 
   // 网络请求
@@ -142,9 +143,10 @@
     padding-top: var(--nav-bar-height);
     /* tab-bar高度加上tab-bar的box-shadow高度，不设置商品列表的底部会被tab-bar挡住 */
     padding-bottom: calc( var(--tab-bar-height) + 3px);
-
+    /* 方法1  父级相对定位
+      .scroll绝对定位 top bottom 设置滚动的高度
+     */
     position: relative;
-
     height: 100vh;
   }
 
@@ -164,11 +166,17 @@
   }
 
   .scroll{
+    /* 方法1  父级相对定位
+      .scroll绝对定位 top bottom 设置滚动的高度
+     */
     position: absolute;
-    /* top: 44px;
-    bottom: 49px;
-
+    top: var(--nav-bar-height);
+    bottom: var(--tab-bar-height);
+    /* 设置宽度100% */
     left: 0;
-    right: 0; */
+    right: 0;
+
+    /* 方法2  用calc  100vh - navbar高度 - tabbar高度 */
+    /* height: calc( 100vh - var(--nav-bar-height) - var(--tab-bar-height) ); */
   }
 </style>
