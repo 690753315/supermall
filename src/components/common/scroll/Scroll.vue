@@ -9,17 +9,16 @@
 <script>
 // 导入 better-scroll
 import BScroll from 'better-scroll'
-
 export default {
   name: 'Scroll',
   data(){
     return {
-      bscroll: null
+      scroll: null
     }
   },
   // 进行DOM操作要在mounted里进行，不能在created
   mounted(){
-    this.bscroll = new BScroll(this.$refs.wrapper, {
+    this.scroll = new BScroll(this.$refs.wrapper, {
       // 默认情况下BScroll是不可以实时监听滚动位置的
       /*
         probe: 监测
@@ -40,7 +39,16 @@ export default {
       pullUpLoad: true,
     })
 
+    this.scroll.scrollTo(0, 0, 300)
+
+
+
   },
+  methods:{
+    backTop(){
+      // this.scroll.scrollTo(0, 0, 300)
+    }
+  }
 }
 </script>
 

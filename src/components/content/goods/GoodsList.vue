@@ -35,11 +35,11 @@ export default {
 
     /* 设置图片两侧的距离相等 */
     justify-content: space-around;
-    padding: 0 6px;
+    padding: 0;
   }
 
   .goods-item{
-    width: 47%;
+    width: 45%;
     padding-bottom: 40px;
     position: relative;
   }

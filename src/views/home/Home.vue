@@ -4,7 +4,7 @@
       <div slot="center">导航栏</div>
     </nav-bar>
 
-    <scroll class="scroll">
+    <scroll class="scroll" ref="scroll">
       <!-- 用props 父组件给子组件动态传值 -->
       <home-swiper :banners="banners"></home-swiper>
 
@@ -18,6 +18,9 @@
       <!-- 传递要显示的商品列表的数据给子组件 -->
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
+
+    <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
+    <back-top @click.native="backClick"></back-top>
 
   </div>
 </template>
@@ -38,8 +41,11 @@
   // 商品列表
   import GoodsList from 'components/content/goods/GoodsList'
 
-  //
+  // 滚动
   import Scroll from 'components/common/scroll/Scroll'
+
+  // 回顶部按钮
+  import BackTop from 'components/content/backTop/BackTop'
 
   // 网络请求
   import {getHomeMultidata, getHomeGoods} from 'network/home'
@@ -81,7 +87,8 @@
       FeatureView,
       TabControl,
       GoodsList,
-      Scroll
+      Scroll,
+      BackTop
     },
     computed:{
       // tabControl显示的类型改变时
@@ -133,6 +140,11 @@
             this.currentType = 'sell'
             break;
         }
+      },
+      // 点击回顶部按钮
+      backClick(){
+        this.$refs.scroll.scroll.scrollTo(0, 0, 500)
+        // this.$refs.scroll.backTop()
       }
     }
   }

@@ -48,9 +48,10 @@ export default {
     font-size: 15px;
 
     /* 暂时用这个控制，后面换其他的 */
-    position: sticky;
+    /* 加了BScroll后 这个属性就不管用了 */
+    /* position: sticky; */
     /* 滑到这个top值后固定 */
-    top: var(--nav-bar-height);
+    /* top: var(--nav-bar-height); */
 
     background-color: var(--color-background);
 
