@@ -28,7 +28,6 @@
 <script>
   // 导航栏
   import NavBar from 'components/common/navbar/NavBar'
-
   // 轮播
   import HomeSwiper from 'views/home/childComps/HomeSwiper.vue'
   // 推荐
@@ -37,19 +36,14 @@
   import FeatureView from 'views/home/childComps/FeatureView.vue'
   // 流行、新款、精选 按钮
   import TabControl from 'components/content/tabControl/TabControl'
-
   // 商品列表
   import GoodsList from 'components/content/goods/GoodsList'
-
   // 滚动
   import Scroll from 'components/common/scroll/Scroll'
-
   // 回顶部按钮
   import BackTop from 'components/content/backTop/BackTop'
-
   // 网络请求
   import {getHomeMultidata, getHomeGoods} from 'network/home'
-
   export default {
     name: 'home',
     data() {
@@ -99,7 +93,6 @@
     created(){
       // 为了简化created()里面的代码，把请求放到methods里进行，在created里面调用方法
       this.getHomeMultidata()
-
       // 初始化请求商品列表数据
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
@@ -123,7 +116,6 @@
           this.goods[type].list.push(...res.data.data.list)
         })
       },
-
       /*
         下面是事件监听的相关方法
       */
@@ -143,8 +135,7 @@
       },
       // 点击回顶部按钮
       backClick(){
-        this.$refs.scroll.scroll.scrollTo(0, 0, 500)
-        // this.$refs.scroll.backTop()
+        this.$refs.scroll.backTop()
       }
     }
   }
@@ -161,22 +152,18 @@
     position: relative;
     height: 100vh;
   }
-
   .home-nav-bar{
     background-color: var(--color-tint);
     color: #fff;
     box-shadow: 0 1px 1px rgba(100,100,100,0.1);
-
     /* 将导航栏固定在顶部 */
     position: fixed;
     top: 0;
     /* 设置宽度100% */
     left: 0;
     right: 0;
-
     z-index: 9;
   }
-
   .scroll{
     /* 方法1  父级相对定位
       .scroll绝对定位 top bottom 设置滚动的高度
@@ -187,7 +174,6 @@
     /* 设置宽度100% */
     left: 0;
     right: 0;
-
     /* 方法2  用calc  100vh - navbar高度 - tabbar高度 */
     /* height: calc( 100vh - var(--nav-bar-height) - var(--tab-bar-height) ); */
   }

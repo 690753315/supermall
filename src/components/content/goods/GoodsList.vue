@@ -84,8 +84,9 @@ export default {
     content: '';
     position: absolute;
     left: -15px;
+    top: -1px;
     width: 13px;
     height: 13px;
-    background: url(/img/collect.eb1f91fb.svg) 0 center/13px no-repeat;
+    background: url(~assets/img/common/collect.svg) 0 center/13px no-repeat;
   }
 </style>

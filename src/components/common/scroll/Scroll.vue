@@ -38,15 +38,10 @@ export default {
       */
       pullUpLoad: true,
     })
-
-    this.scroll.scrollTo(0, 0, 300)
-
-
-
   },
   methods:{
     backTop(){
-      // this.scroll.scrollTo(0, 0, 300)
+      this.scroll.scrollTo(0, 0, 300)
     }
   }
 }
