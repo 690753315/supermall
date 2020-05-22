@@ -181,7 +181,7 @@
       },
       // 接受Scroll的上拉事件
       pullingUp(){
-        console.log('上拉')
+        // console.log('上拉')
         // 加载更多
         this.getHomeGoods(this.currentType)
       }
