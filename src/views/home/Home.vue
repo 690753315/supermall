@@ -4,7 +4,11 @@
       <div slot="center">导航栏</div>
     </nav-bar>
 
-    <scroll class="scroll" ref="scroll">
+    <!-- 注意prop的大小写问题，不要用驼峰 -->
+    <scroll class="scroll" ref="scroll"
+      :probe-type="3" @scroll="scroll"
+      :pull-up-load="true" @pullingUp="pullingUp"
+    >
       <!-- 用props 父组件给子组件动态传值 -->
       <home-swiper :banners="banners"></home-swiper>
 
@@ -20,7 +24,7 @@
     </scroll>
 
     <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
-    <back-top @click.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isBackTopShow"></back-top>
 
   </div>
 </template>
@@ -71,7 +75,10 @@
           },
         },
         // 当前tabControl显示的类型
-        currentType: 'pop'
+        currentType: 'pop',
+        // 控制backTop组件的显示和隐藏
+        isBackTopShow: false,
+
       }
     },
     components:{
@@ -98,6 +105,17 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
+    mounted(){
+      // 监听图片加载完成
+      /* 因为有用到$refs获取DOM元素的内容,
+      所以必须放在mounted里，created里组件还未挂载到页面上 */
+      // 组件之间使用this.$bus.$on传值之前需要先this.$bus.$off注销事件
+      this.$bus.$off(event).$on('imageLoad', () => {
+        // console.log(this.$refs.scroll.refresh)
+        this.$refs.scroll.refresh()
+        console.log('图片加载完成z')
+      })
+    },
     methods: {
       /*
         下面是网络请求的相关方法
@@ -114,6 +132,15 @@
         const page = ++this.goods[type].page
         getHomeGoods(type, page).then( res => {
           this.goods[type].list.push(...res.data.data.list)
+
+          // 加个定时器，防止一直上拉加载。至少1秒才能进行一次上拉加载
+          setTimeout(() => {
+          // 加载完更多后要执行Scroll.finishPullUp()，不然只能进行一次上拉操作
+            this.$refs.scroll.finishPullUp()
+          }, 1000)
+
+          // 数据变多，content高度更新了，重新计算this.$refs.scroll.scrollerHeight的高度
+          this.$refs.scroll.refresh()
         })
       },
       /*
@@ -135,7 +162,24 @@
       },
       // 点击回顶部按钮
       backClick(){
-        this.$refs.scroll.backTop()
+        // 不知道是什么原因，电脑端的手机模式用鼠标滚轮滑下去后点击没反应
+        // 要用鼠标模拟手机下滑页面后 点击才有效果
+        // 不是已经兼容PC端了吗
+        this.$refs.scroll.backTop(0, 0, 300 )
+      },
+      // 接受Scroll的滚动事件
+      scroll(position){
+        // console.log(position)
+        /* 向下滑，position.y小于0，
+          所以滚动距离当超过1000时为 position.y< -1000
+        */
+        this.isBackTopShow = (position.y < -1000)
+      },
+      // 接受Scroll的上拉事件
+      pullingUp(){
+        // console.log('上拉')
+        // 加载更多
+        this.getHomeGoods(this.currentType)
       }
     }
   }

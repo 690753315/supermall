@@ -2,7 +2,8 @@
   <div class="goods">
     <!-- <goods-list-item></goods-list-item> -->
     <div v-for="item in goods" :key="item.show.img" class="goods-item">
-      <img :src="item.show.img">
+      <!-- @load 监听图片加载完成事件 -->
+      <img :src="item.show.img" @load="imageLoad">
       <div class="goods-info">
         <p class="goods-title">{{item.title}}</p>
         <span class="price">￥{{item.price}}</span>
@@ -22,6 +23,12 @@ export default {
       default(){
         return []
       }
+    }
+  },
+  methods:{
+    imageLoad(){
+      // 触发事件
+      this.$bus.$emit('imageLoad')
     }
   }
 }
