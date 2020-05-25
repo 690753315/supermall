@@ -4,17 +4,22 @@
       <div slot="center">导航栏</div>
     </nav-bar>
 
+    <!--
+      复制一份tab-control放在这里，用于做tabControl的吸顶效果
+      固定在顶部，不随滚动条滚动，所以放scroll外面。
+    -->
+      <tab-control :titles="tabControlTitles"
+        @itemClick="itemClick"
+        ref="tabControl1"
+        class="tab-control-fixed"
+        v-show="isTabControlFixed">
+      ></tab-control>
+
     <!-- 注意prop的大小写问题，不要用驼峰 -->
     <scroll class="scroll" ref="scroll"
       :probe-type="3" @scroll="scroll"
       :pull-up-load="true" @pullingUp="pullingUp"
     >
-      <!-- 复制一份tab-control放在这里，用于做tabControl的吸顶效果 -->
-      <tab-control :titles="tabControlTitles"
-        @itemClick="itemClick"
-        ref="tabControl"
-        class="tab-control-fixed">
-      ></tab-control>
 
       <!-- 用props 父组件给子组件动态传值 -->
       <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
@@ -26,8 +31,7 @@
       <!-- @itemClick="itemClick" 要写在对应的tab-control标签上， 不能写到其他标签上(比如说goods-list) -->
       <tab-control :titles="tabControlTitles"
         @itemClick="itemClick"
-        ref="tabControl"
-        :class="{'fixed': isTabControlFixed}"
+        ref="tabControl2"
       ></tab-control>
 
       <!-- 传递要显示的商品列表的数据给子组件 -->
@@ -95,8 +99,15 @@
         // TabControl到顶部的距离
         taboffsetTop: 0,
         // TabControl是否固定在顶部
-        isTabControlFixed: false
+        isTabControlFixed: false,
 
+        savePopY: 0,
+        saveNewY: 0,
+        saveSellY: 0,
+
+
+        // 离开Home组件时，滚动条的位置
+        saveY: 0,
       }
     },
     components:{
@@ -143,6 +154,12 @@
         refresh()
       })
     },
+    activated() {
+      this.$refs.scroll.backTop(0, this.saveY, 0)
+    },
+    deactivated() {
+      this.saveY = this.$refs.scroll.getScrollY()
+    },
     methods: {
       /*
         下面是网络请求的相关方法
@@ -175,17 +192,38 @@
       */
       // tabControl点击时，获取点击的type
       itemClick(index){
+
+        // switch(this.currentType){
+        //   case 'pop':
+        //     console.log(this.currentType)
+        //     this.savePopY = this.$refs.scroll.getScrollY()
+        //     break;
+        //   case 'new':
+        //     console.log(this.currentType)
+        //     this.saveNewY = this.$refs.scroll.getScrollY()
+        //     break;
+        //   case 'sell':
+        //     console.log(this.currentType)
+        //     this.saveSellY = this.$refs.scroll.getScrollY()
+        //     break;
+        // }
+
         switch(index){
           case 0:
             this.currentType = 'pop'
+            // this.$refs.scroll.backTop(0, this.savePopY, 0 )
             break;
           case 1:
             this.currentType = 'new'
+            // this.$refs.scroll.backTop(0, this.saveNewY, 0 )
             break;
           case 2:
             this.currentType = 'sell'
+            // this.$refs.scroll.backTop(0, this.saveSellY, 0 )
             break;
         }
+        // 使两个TabControl当前高亮的类型一样
+        this.$refs.tabControl1.currentIndex = this.$refs.tabControl2.currentIndex = index
       },
       // 点击回顶部按钮
       backClick(){
@@ -225,8 +263,8 @@
         这时获取的TabControl的offsetTop是不准确的
         所以要判断banner的图片至少有一张加载完成
         */
-        this.taboffsetTop = this.$refs.tabControl.$el.offsetTop
-        console.log( this.$refs.tabControl.$el.offsetTop )
+        this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop
+        console.log( this.$refs.tabControl2.$el.offsetTop )
       }
     }
   }
@@ -268,17 +306,14 @@
     /* 方法2  用calc  100vh - navbar高度 - tabbar高度 */
     /* height: calc( 100vh - var(--nav-bar-height) - var(--tab-bar-height) ); */
   }
-  .fixed{
-    position: fixed;
-    top: var(--nav-bar-height);
-    left: 0;
-    right: 0;
-  }
 
+  /* TabControl 到顶端的时候，显示scroll外面的TabControl */
   .tab-control-fixed{
-    position: relative;
+    position: absolute;
     top: var(--nav-bar-height);
     left: 0;
     right: 0;
+    z-index: 9;
+    background-color: var(--color-background);
   }
 </style>

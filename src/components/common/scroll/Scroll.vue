@@ -97,6 +97,9 @@ export default {
       this.scroll && this.scroll.refresh()
 
       console.log('图片加载完成')
+    },
+    getScrollY(){
+      return this.scroll? this.scroll.y: 0
     }
   }
 }

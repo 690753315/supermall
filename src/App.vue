@@ -1,7 +1,10 @@
 <template>
   <div>
-    <!-- 路由显示的位置 -->
-    <router-view></router-view>
+    <keep-alive>
+      <!-- 路由显示的位置 -->
+      <router-view></router-view>
+    </keep-alive>
+
 
     <!-- tabbar的内容 -->
     <main-tab-bar></main-tab-bar>

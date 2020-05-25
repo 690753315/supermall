@@ -52,11 +52,9 @@ export default {
     /* position: sticky; */
     /* 滑到这个top值后固定 */
     /* top: var(--nav-bar-height); */
-
-    background-color: var(--color-background);
-
+    /* background-color: var(--color-background); */
     /* 防止上滑被商品列表挡住 */
-    z-index: 9;
+    /* z-index: 9; */
   }
 
   .tab-control-item{
