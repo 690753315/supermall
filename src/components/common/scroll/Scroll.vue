@@ -54,29 +54,34 @@ export default {
     })
 
     // 2. 监听滚动事件及滚动位置
-    this.scroll.on('scroll', position => {
-      // 输出滚动条的位置
-      // console.log(position)
+    if (this.probeType === 2 || this.probeType === 3 ){
+      this.scroll.on('scroll', position => {
+        // 输出滚动条的位置
+        // console.log(position)
 
-      // 滚动时， 发送自定义事件给父组件 并传递position
-      this.$emit('scroll', position)
-    })
+        // 滚动时， 发送自定义事件给父组件 并传递position
+        this.$emit('scroll', position)
+      })
+    }
 
-    // 3.上拉操作
-    this.scroll.on('pullingUp', () => {
+    // 3.监听上拉操作
+    if (this.pullUpLoad){
+      this.scroll.on('pullingUp', () => {
+        console.log('滚动到底部了')
+        this.$emit('pullingUp')
+        // 加个定时器，防止一直上拉加载。至少1秒才能进行一次上拉加载
+        // setTimeout(() => {
+        //   // 如果不加下面这一行，只会触发一次上拉操作
+        //   this.bscroll.finishPullUp()
+        // }, 1000)
+      });
+    }
 
-      this.$emit('pullingUp')
-      // 加个定时器，防止一直上拉加载。至少1秒才能进行一次上拉加载
-      // setTimeout(() => {
-      //   // 如果不加下面这一行，只会触发一次上拉操作
-      //   this.bscroll.finishPullUp()
-      // }, 1000)
-    });
 
   },
   methods:{
     /*  当其他组件调用this.scroll的方法时，this.scroll可能还未被new BScroll赋值，
-    还是null、不存在这些方法。可能会报错，所以先判断是否存在this.scroll */
+    还是null、不存在这些方法，可能会报方法undefined，所以先判断是否存在this.scroll */
     backTop(x, y, time){
       // 滚动条回到指定位置
       this.scroll && this.scroll.scrollTo(x, y, time)
@@ -90,6 +95,8 @@ export default {
         不然可能还是以原来的区域为可滑动高度
       */
       this.scroll && this.scroll.refresh()
+
+      console.log('图片加载完成')
     }
   }
 }

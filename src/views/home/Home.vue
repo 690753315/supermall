@@ -9,15 +9,26 @@
       :probe-type="3" @scroll="scroll"
       :pull-up-load="true" @pullingUp="pullingUp"
     >
+      <!-- 复制一份tab-control放在这里，用于做tabControl的吸顶效果 -->
+      <tab-control :titles="tabControlTitles"
+        @itemClick="itemClick"
+        ref="tabControl"
+        class="tab-control-fixed">
+      ></tab-control>
+
       <!-- 用props 父组件给子组件动态传值 -->
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
 
       <recommend-view :recommends="recommends"></recommend-view>
 
       <feature-view></feature-view>
 
       <!-- @itemClick="itemClick" 要写在对应的tab-control标签上， 不能写到其他标签上(比如说goods-list) -->
-      <tab-control :titles="tabControlTitles" @itemClick="itemClick"></tab-control>
+      <tab-control :titles="tabControlTitles"
+        @itemClick="itemClick"
+        ref="tabControl"
+        :class="{'fixed': isTabControlFixed}"
+      ></tab-control>
 
       <!-- 传递要显示的商品列表的数据给子组件 -->
       <goods-list :goods="showGoods"></goods-list>
@@ -48,6 +59,9 @@
   import BackTop from 'components/content/backTop/BackTop'
   // 网络请求
   import {getHomeMultidata, getHomeGoods} from 'network/home'
+  // 共通的方法：防抖函数
+  import {debounce} from 'common/utils'
+
   export default {
     name: 'home',
     data() {
@@ -78,6 +92,10 @@
         currentType: 'pop',
         // 控制backTop组件的显示和隐藏
         isBackTopShow: false,
+        // TabControl到顶部的距离
+        taboffsetTop: 0,
+        // TabControl是否固定在顶部
+        isTabControlFixed: false
 
       }
     },
@@ -106,14 +124,23 @@
       this.getHomeGoods('sell')
     },
     mounted(){
+      // 防抖函数  this.debounce 返回一个函数
+      const refresh = debounce( this.$refs.scroll.refresh, 500 )
+
       // 监听图片加载完成
       /* 因为有用到$refs获取DOM元素的内容,
       所以必须放在mounted里，created里组件还未挂载到页面上 */
       // 组件之间使用this.$bus.$on传值之前需要先this.$bus.$off注销事件
       this.$bus.$off(event).$on('imageLoad', () => {
         // console.log(this.$refs.scroll.refresh)
-        this.$refs.scroll.refresh()
-        console.log('图片加载完成z')
+        // this.$refs.scroll.refresh()
+
+        /*
+        因为闭包，所以公用同一地址的父级函数的对应变量最终的值。
+        这里const refresh，所以地址相同，共用一个timer
+        所以可用timer是否存在来判断有没有图片加载完成
+        */
+        refresh()
       })
     },
     methods: {
@@ -169,17 +196,37 @@
       },
       // 接受Scroll的滚动事件
       scroll(position){
-        // console.log(position)
-        /* 向下滑，position.y小于0，
+        console.log(position)
+
+        /*
+        判断backTop是否显示
+        向下滑，position.y小于0，
           所以滚动距离当超过1000时为 position.y< -1000
         */
         this.isBackTopShow = (position.y < -1000)
+
+        /* 判断TabControl是否吸顶
+         */
+        this.isTabControlFixed = ( position.y < (-this.taboffsetTop) )
+
       },
       // 接受Scroll的上拉事件
       pullingUp(){
         // console.log('上拉')
         // 加载更多
         this.getHomeGoods(this.currentType)
+      },
+      // banner 至少一张加载完成
+      swiperImageLoad(){
+        // .$el 获取当前组件的$el属性， 也就是当前组件对应的DOM对象
+        // offsetTop 元素距离顶部的距离
+        /* 初始化化，TabControl上方的banner还未加载完成
+        (RecommendView和FeatureView的图片比较小张，这里忽略)，
+        这时获取的TabControl的offsetTop是不准确的
+        所以要判断banner的图片至少有一张加载完成
+        */
+        this.taboffsetTop = this.$refs.tabControl.$el.offsetTop
+        console.log( this.$refs.tabControl.$el.offsetTop )
       }
     }
   }
@@ -220,5 +267,18 @@
     right: 0;
     /* 方法2  用calc  100vh - navbar高度 - tabbar高度 */
     /* height: calc( 100vh - var(--nav-bar-height) - var(--tab-bar-height) ); */
+  }
+  .fixed{
+    position: fixed;
+    top: var(--nav-bar-height);
+    left: 0;
+    right: 0;
+  }
+
+  .tab-control-fixed{
+    position: relative;
+    top: var(--nav-bar-height);
+    left: 0;
+    right: 0;
   }
 </style>
