@@ -1,7 +1,11 @@
 <template>
   <div class="goods">
     <!-- <goods-list-item></goods-list-item> -->
-    <div v-for="item in goods" :key="item.show.img" class="goods-item">
+    <div v-for="item in goods"
+      :key="item.show.img"
+      class="goods-item"
+      @click="goodsItemClick(item.iid)"
+    >
       <!-- @load 监听图片加载完成事件 -->
       <img :src="item.show.img" @load="imageLoad">
       <div class="goods-info">
@@ -26,9 +30,15 @@ export default {
     }
   },
   methods:{
+    // 商品图片加载完成
     imageLoad(){
       // 触发事件
       this.$bus.$emit('imageLoad')
+    },
+    // 点击商品
+    goodsItemClick(id){
+      // console.log( id )
+      this.$router.push('/detail/'+id)
     }
   }
 }

@@ -36,4 +36,8 @@ export default {
     flex: 1;
     text-align: center;
   }
+
+  .left, .center, .right{
+    text-align: center;
+  }
 </style>

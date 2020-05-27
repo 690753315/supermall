@@ -1,6 +1,8 @@
 <template>
   <div>
-    <keep-alive>
+    <!-- 因为在首页点击商品 进入详情页后 返回到首页 再次点击其他商品
+    要让商品里面的内容改变 所有Detail销毁再创建 所以要排除 -->
+    <keep-alive exclude="Detail">
       <!-- 路由显示的位置 -->
       <router-view></router-view>
     </keep-alive>

@@ -67,7 +67,7 @@ export default {
     // 3.监听上拉操作
     if (this.pullUpLoad){
       this.scroll.on('pullingUp', () => {
-        console.log('滚动到底部了')
+        // console.log('滚动到底部了')
         this.$emit('pullingUp')
         // 加个定时器，防止一直上拉加载。至少1秒才能进行一次上拉加载
         // setTimeout(() => {
@@ -76,7 +76,6 @@ export default {
         // }, 1000)
       });
     }
-
 
   },
   methods:{
@@ -96,7 +95,7 @@ export default {
       */
       this.scroll && this.scroll.refresh()
 
-      console.log('图片加载完成')
+      // console.log('图片加载完成')
     },
     getScrollY(){
       return this.scroll? this.scroll.y: 0

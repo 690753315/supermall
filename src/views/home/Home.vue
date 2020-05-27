@@ -7,6 +7,9 @@
     <!--
       复制一份tab-control放在这里，用于做tabControl的吸顶效果
       固定在顶部，不随滚动条滚动，所以放scroll外面。
+      ref="xxxx" xxxx好像可以随意命名 不一定要用对应组件的变量名
+      这里默认隐藏，当下面的TabControl滑动到顶部时，让下面的TabControl继续随滚动条移动上去，
+      这里的TabControl1则显示固定在顶部，使页面看起来就像是tabControl2固定在顶部一样
     -->
       <tab-control :titles="tabControlTitles"
         @itemClick="itemClick"
@@ -100,13 +103,7 @@
         taboffsetTop: 0,
         // TabControl是否固定在顶部
         isTabControlFixed: false,
-
-        savePopY: 0,
-        saveNewY: 0,
-        saveSellY: 0,
-
-
-        // 离开Home组件时，滚动条的位置
+        // Home组件离开时，滚动条的位置
         saveY: 0,
       }
     },
@@ -154,10 +151,14 @@
         refresh()
       })
     },
+    // 组件活跃时
     activated() {
+      // 活跃时滚动条回到记录的位置
       this.$refs.scroll.backTop(0, this.saveY, 0)
     },
+    // 组件不活跃时
     deactivated() {
+      // 不活跃时记录滚动条的位置
       this.saveY = this.$refs.scroll.getScrollY()
     },
     methods: {
@@ -192,37 +193,18 @@
       */
       // tabControl点击时，获取点击的type
       itemClick(index){
-
-        // switch(this.currentType){
-        //   case 'pop':
-        //     console.log(this.currentType)
-        //     this.savePopY = this.$refs.scroll.getScrollY()
-        //     break;
-        //   case 'new':
-        //     console.log(this.currentType)
-        //     this.saveNewY = this.$refs.scroll.getScrollY()
-        //     break;
-        //   case 'sell':
-        //     console.log(this.currentType)
-        //     this.saveSellY = this.$refs.scroll.getScrollY()
-        //     break;
-        // }
-
         switch(index){
           case 0:
             this.currentType = 'pop'
-            // this.$refs.scroll.backTop(0, this.savePopY, 0 )
             break;
           case 1:
             this.currentType = 'new'
-            // this.$refs.scroll.backTop(0, this.saveNewY, 0 )
             break;
           case 2:
             this.currentType = 'sell'
-            // this.$refs.scroll.backTop(0, this.saveSellY, 0 )
             break;
         }
-        // 使两个TabControl当前高亮的类型一样
+        // 使两个TabControl组件当前高亮的类型一样
         this.$refs.tabControl1.currentIndex = this.$refs.tabControl2.currentIndex = index
       },
       // 点击回顶部按钮
@@ -234,7 +216,7 @@
       },
       // 接受Scroll的滚动事件
       scroll(position){
-        console.log(position)
+        // console.log(position)
 
         /*
         判断backTop是否显示
@@ -264,7 +246,7 @@
         所以要判断banner的图片至少有一张加载完成
         */
         this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop
-        console.log( this.$refs.tabControl2.$el.offsetTop )
+        // console.log( this.$refs.tabControl2.$el.offsetTop )
       }
     }
   }

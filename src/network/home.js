@@ -3,13 +3,13 @@ import {request} from './request.js';
 
 export function getHomeMultidata(){
   return request({
-    url: 'api/n3/home/multidata'
+    url: 'home/multidata'
   })
 }
 
 export function getHomeGoods(type, page){
   return request({
-    url: 'api/n3/home/data',
+    url: 'home/data',
     params: {
       type,
       page

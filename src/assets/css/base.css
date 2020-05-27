@@ -32,6 +32,10 @@ a {
   text-decoration: none;
 }
 
+img{
+  vertical-align: middle;
+}
+
 
 .clear-fix::after {
   clear: both;
