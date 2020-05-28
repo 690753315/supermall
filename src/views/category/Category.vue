@@ -64,7 +64,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .wrapper{
     height: 300px;
     background-color: #cdc;

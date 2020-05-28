@@ -97,6 +97,7 @@
 
   .shop-middle-left {
     display: flex;
+    /* 使间距相等 */
     justify-content: space-evenly;
     color: #333;
     text-align: center;

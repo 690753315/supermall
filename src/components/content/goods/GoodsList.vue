@@ -2,12 +2,13 @@
   <div class="goods">
     <!-- <goods-list-item></goods-list-item> -->
     <div v-for="item in goods"
-      :key="item.show.img"
+      :key="item.title"
       class="goods-item"
       @click="goodsItemClick(item.iid)"
     >
       <!-- @load 监听图片加载完成事件 -->
-      <img :src="item.show.img" @load="imageLoad">
+      <!-- 因为数据结构不一样：item.show.img为首页的商品列表的图的数据 item.image为详情页的推荐的图的数据 -->
+      <img :src="(item.show && item.show.img) || item.image" @load="imageLoad">
       <div class="goods-info">
         <p class="goods-title">{{item.title}}</p>
         <span class="price">￥{{item.price}}</span>
@@ -41,6 +42,7 @@ export default {
       this.$router.push('/detail/'+id)
     }
   }
+
 }
 </script>
 

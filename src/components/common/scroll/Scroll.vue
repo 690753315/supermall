@@ -57,7 +57,7 @@ export default {
     if (this.probeType === 2 || this.probeType === 3 ){
       this.scroll.on('scroll', position => {
         // 输出滚动条的位置
-        console.log(position)
+        // console.log(position)
 
         // 滚动时， 发送自定义事件给父组件 并传递position
         this.$emit('scroll', position)
