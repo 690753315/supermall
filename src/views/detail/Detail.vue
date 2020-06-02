@@ -34,8 +34,10 @@ import DetailNavBar from 'views/detail/childComps/DetailNavBar'
   import DetailCommentInfo from 'views/detail/childComps/DetailCommentInfo'
   // 商品推荐列表
   import GoodsList from 'components/content/goods/GoodsList'
-  //
-  // import
+  // 防抖函数
+  import {debounce} from 'common/utils'
+  // 混入
+  import {itemListenerMixin} from 'common/mixin'
 
 
   // 网络请求详情页数据  详情页商品基本信息类 店铺信息类 商品详细数据类 商品参数类 网络请求商品推荐数据
@@ -52,7 +54,7 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends: []
+      recommends: [],
     }
   },
   created(){
@@ -115,20 +117,12 @@ export default {
     }
   },
   mounted(){
-    // 在执行$on之前先$off这个事件，也就是先解绑这个事件的所有触发的地方，然后再用$on单独给当前要触发的地方绑定事件
-    // this.$bus.$off('imageLoad').$on('imageLoad', () => {
 
-    // 防抖函数  this.debounce 返回一个函数
-    const refresh = debounce( this.$refs.scroll.refresh, 500 )
-
-    this.$bus.$on('imageLoad', () => {
-      console.log('详情页')
-      refresh()
-    })
   },
   destroyed() {
-    this.$bus.$off('imageLoad')
-  }
+    this.$bus.$off('imageLoad', this.itemImgListener)
+  },
+  mixins: [itemListenerMixin]
 }
 </script>
 

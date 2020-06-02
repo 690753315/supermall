@@ -68,6 +68,8 @@
   import {getHomeMultidata, getHomeGoods} from 'network/home'
   // 共通的方法：防抖函数
   import {debounce} from 'common/utils'
+  // 混入
+  import {itemListenerMixin} from 'common/mixin'
 
   export default {
     name: 'home',
@@ -105,6 +107,7 @@
         isTabControlFixed: false,
         // Home组件离开时，滚动条的位置
         saveY: 0,
+
       }
     },
     components:{
@@ -133,26 +136,7 @@
       this.getHomeGoods('sell')
     },
     mounted(){
-      // 防抖函数  this.debounce 返回一个函数
-      const refresh = debounce( this.$refs.scroll.refresh, 500 )
 
-      // 监听图片加载完成
-      /* 因为有用到$refs获取DOM元素的内容,
-      所以必须放在mounted里，created里组件还未挂载到页面上 */
-      // 组件之间使用this.$bus.$on传值之前需要先this.$bus.$off注销事件
-      // this.$bus.$off('imageLoad').$on('imageLoad', () => {
-      this.$bus.$on('imageLoad', () => {
-        // console.log(this.$refs.scroll.refresh)
-        // this.$refs.scroll.refresh()
-
-        console.log('首页')
-        /*
-        因为闭包，所以公用同一地址的父级函数的对应变量最终的值。
-        这里const refresh，所以地址相同，共用一个timer
-        所以可用timer是否存在来判断有没有图片加载完成
-        */
-        refresh()
-      })
     },
     // 组件活跃时
     activated() {
@@ -166,7 +150,7 @@
       // 不活跃时记录滚动条的位置
       this.saveY = this.$refs.scroll.getScrollY()
 
-      this.$bus.$off('imageLoad')
+      this.$bus.$off('imageLoad', this.itemImgListener)
     },
     methods: {
       /*
@@ -255,7 +239,8 @@
         this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop
         // console.log( this.$refs.tabControl2.$el.offsetTop )
       }
-    }
+    },
+    mixins: [itemListenerMixin]
   }
 </script>
 
