@@ -140,10 +140,12 @@
       /* 因为有用到$refs获取DOM元素的内容,
       所以必须放在mounted里，created里组件还未挂载到页面上 */
       // 组件之间使用this.$bus.$on传值之前需要先this.$bus.$off注销事件
-      this.$bus.$off(event).$on('imageLoad', () => {
+      // this.$bus.$off('imageLoad').$on('imageLoad', () => {
+      this.$bus.$on('imageLoad', () => {
         // console.log(this.$refs.scroll.refresh)
         // this.$refs.scroll.refresh()
 
+        console.log('首页')
         /*
         因为闭包，所以公用同一地址的父级函数的对应变量最终的值。
         这里const refresh，所以地址相同，共用一个timer
@@ -163,6 +165,8 @@
     deactivated() {
       // 不活跃时记录滚动条的位置
       this.saveY = this.$refs.scroll.getScrollY()
+
+      this.$bus.$off('imageLoad')
     },
     methods: {
       /*

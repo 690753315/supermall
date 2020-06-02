@@ -34,8 +34,19 @@ export default {
     // 商品图片加载完成
     imageLoad(){
       // 触发事件
+      // 方法1  写两个触发方法:imageLoad、detailImageLoad 根据当前活跃的路由 判断是imageLoad还是detailImageLoad
+      // console.log(this.$route.path.indexOf('/home'), this.$route.path.indexOf('/detail'))
+
+      // if ( this.$route.path.indexOf('/home') !== -1 ){
+      //   this.$bus.$emit('imageLoad')
+      // } else if ( this.$route.path.indexOf('/detail') !== -1 ){
+      //   this.$bus.$emit('detailImageLoad')
+      // }
+
+      // 方法2  只写一个触发方法。利用this.$bus.$off()取消首页或者详情页的图片加载完成事件
       this.$bus.$emit('imageLoad')
     },
+
     // 点击商品
     goodsItemClick(id){
       // console.log( id )
