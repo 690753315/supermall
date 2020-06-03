@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
     <!-- 注意props命名 -->
-    <detail-nav-bar class="detail-nav-bar" @titleClick="titleClick" ref="DetailNavBar"/>
+    <detail-nav-bar class="detail-nav-bar" @titleClick="titleClick"  ref="DetailNavBar"/>
     <!-- 一定要设置可滚动的高度，不然不能滚动 -->
     <scroll class="scroll" ref="scroll" :probe-type="3" @scroll="scroll">
       <detail-swiper :top-images="topImages"/>
@@ -55,8 +55,8 @@ export default {
       paramInfo: {},
       commentInfo: {},
       recommends: [],
-      themeTopYs: [0],
-      currentIndex: 0
+      themeTopYs: [],
+      getThemeTopYs: null,
     }
   },
   created(){
@@ -67,18 +67,20 @@ export default {
     // 获取商品推荐数据
     this.getRecommend()
 
-    // console.log(456)
-    // /**标题与内容联动效果*/
-    // //4.给getThemeTopY赋值（对给this.themeTopYs赋值的操作进行防抖操作）
-    // this.getThemeTopY = debounce(() => {
-    //   console.log(789)
-    //   this.themeTopYs = [0]
-    //   this.themeTopYs.push(this.$refs.params.$el.offsetTop);
-    //   this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
-    //   this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
-    //   // this.themeTopYs.push(Number.MAX_VALUE)
-    //   console.log(this.themeTopYs);
-    // },100)
+    /**标题与内容联动效果
+      将debounce的回调函数赋值给this.getThemeTopYs，所以this.getThemeTopYs是个函数，但并未执行，
+      this.getThemeTopYs() 这样才是执行函数,这里相当于定义this.getThemeTopYs这个函数而已，所以this.$refs在这里没有执行
+    */
+    this.getThemeTopYs = debounce(() => {
+      this.themeTopYs = [0]
+      this.themeTopYs.push(this.$refs.DetailParamInfo.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.DetailCommentInfo.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.GoodsList.$el.offsetTop)
+
+      this.themeTopYs.push(Number.MAX_VALUE)
+
+      console.log(this.$refs.DetailParamInfo.$el.offsetTop)
+    }, 100)
   },
   components:{
     DetailNavBar,
@@ -114,6 +116,15 @@ export default {
           this.commentInfo = data.rate.list[0]
         }
 
+        // 使用this.$nextTick 虽然能获取值，但是图片还是没加载完成，获取到的值不对
+        // this.$nextTick(()=>{
+        //   this.themeTopYs = [0]
+        //   console.log(this.$refs.DetailParamInfo.$el.offsetTop)
+        //   this.themeTopYs.push(this.$refs.DetailParamInfo.$el.offsetTop)
+        //   this.themeTopYs.push(this.$refs.DetailCommentInfo.$el.offsetTop)
+        //   this.themeTopYs.push(this.$refs.GoodsList.$el.offsetTop)
+        // })
+
       })
     },
     // 获取详情页商品推荐数据
@@ -131,11 +142,8 @@ export default {
       // console.log('刷新')
       this.$refs.scroll.refresh()
 
-      this.themeTopYs = [0]
-      console.log(this.$refs.DetailParamInfo.$el.offsetTop)
-      this.themeTopYs.push(this.$refs.DetailParamInfo.$el.offsetTop)
-      this.themeTopYs.push(this.$refs.DetailCommentInfo.$el.offsetTop)
-      this.themeTopYs.push(this.$refs.GoodsList.$el.offsetTop)
+      // 获取各个标题对应内容的高度
+      this.getThemeTopYs()
     },
     // 点击标题，滚动到标题对应内容的位置
     titleClick(index){
@@ -143,56 +151,44 @@ export default {
     },
     // 滚动
     scroll(position){
-      console.log(this.themeTopYs[0], -position.y, this.themeTopYs[1], this.themeTopYs[2], this.themeTopYs[3])
+      const positionY = -position.y
 
-      // if ( this.themeTopYs[0] <= (-position.y) ){
-      //   console.log(5555)
-      // }
-
-      // if ( (-position.y) <= this.themeTopYs[1] ){
-      //   console.log(66666)
-      // } else
-      // if ( this.themeTopYs[1] <= (-position.y) ){
-      //   console.log('.........')
-      // }
-
-
-      // if ( (-position.y) <= this.themeTopYs[2] ){
-      //   console.log(777777)
-      // } else if ( this.themeTopYs[2] <= (-position.y) ){
-      //   console.log(88888)
-      // }
-
-      // if  ( (-position.y) <= this.themeTopYs[2]){
-      //   console.log(99999)
-      //   // this.$refs.DetailNavBar.currentIndex = 2
-      // } else if ( (-position.y) > this.themeTopYs[2] ){
+      // 方法1
+      // if  ( this.$refs.DetailNavBar.currentIndex !== 0 && (this.themeTopYs[0] <= positionY && positionY < this.themeTopYs[1]) ){
       //   console.log(0)
+      //   this.$refs.DetailNavBar.currentIndex = 0
+      // } else if  ( this.$refs.DetailNavBar.currentIndex !== 1 && (this.themeTopYs[1] <= positionY && positionY < this.themeTopYs[2]) ){
+      //   console.log(1)
+      //   this.$refs.DetailNavBar.currentIndex = 1
+      // } else if  ( this.$refs.DetailNavBar.currentIndex !== 2 && (this.themeTopYs[2] <= positionY && positionY < this.themeTopYs[3]) ){
+      //   console.log(2)
+      //   this.$refs.DetailNavBar.currentIndex = 2
+      // } else if ( (this.$refs.DetailNavBar.currentIndex !== 3) && ( this.themeTopYs[3] <= positionY ) ){
+      //   console.log(3)
+      //   this.$refs.DetailNavBar.currentIndex = 3
       // }
 
-      if  ( (-position.y) <= this.themeTopYs[2]){
-        console.log( ((-position.y) - this.themeTopYs[2]), '小于')
+      // 方法2
+      // let length = this.themeTopYs.length
+      // for (let i in this.themeTopYs){
+      //   i = parseInt(i)
+      //   if (
+      //     (this.$refs.DetailNavBar.currentIndex !== i) &&
+      //     ( (i<length-1) && (this.themeTopYs[i] <= positionY) && (positionY < this.themeTopYs[i+1]) ||
+      //     (i===length-1) && (this.themeTopYs[i] <= positionY) )
+      //   ){
+      //     console.log(i)
+      //     this.$refs.DetailNavBar.currentIndex = i
+      //   }
+      // }
 
-        // this.$refs.DetailNavBar.currentIndex = 2
-      } else {
-        console.log( ((-position.y) - this.themeTopYs[2]), '大于')
-      }
-
-
-
-
-      if ( (-position.y) <= this.themeTopYs[1]){
-        console.log(1111)
-        this.$refs.DetailNavBar.currentIndex = 0
-      } else if  ( this.themeTopYs[1] <= (-position.y) <= this.themeTopYs[2]){
-        console.log( '小于2222222222')
-        this.$refs.DetailNavBar.currentIndex = 1
-      } else if  ( this.themeTopYs[2] <= (-position.y) <= this.themeTopYs[3]){
-        console.log(3333)
-        this.$refs.DetailNavBar.currentIndex = 2
-      } else {
-        console.log(4444)
-        this.$refs.DetailNavBar.currentIndex = 3
+      // 方法3
+      let length = this.themeTopYs.length
+      for (let i in this.themeTopYs){
+        i = parseInt(i)
+        if ( (this.$refs.DetailNavBar.currentIndex !== i) && (this.themeTopYs[i] <= positionY) && (positionY < this.themeTopYs[i+1]) ){
+          this.$refs.DetailNavBar.currentIndex = i
+        }
       }
     }
   },
@@ -232,5 +228,8 @@ export default {
     position: relative;
     z-index: 9;
     background-color: #fff;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 </style>
