@@ -44,6 +44,8 @@
     <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
     <back-top @click.native="backClick" v-show="isBackTopShow"></back-top>
 
+
+
   </div>
 </template>
 
@@ -69,7 +71,7 @@
   // 共通的方法：防抖函数
   import {debounce} from 'common/utils'
   // 混入
-  import {itemListenerMixin} from 'common/mixin'
+  import {itemListenerMixin, backTopMixin} from 'common/mixin'
 
   export default {
     name: 'home',
@@ -99,8 +101,6 @@
         },
         // 当前tabControl显示的类型
         currentType: 'pop',
-        // 控制backTop组件的显示和隐藏
-        isBackTopShow: false,
         // TabControl到顶部的距离
         taboffsetTop: 0,
         // TabControl是否固定在顶部
@@ -118,7 +118,6 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
     },
     computed:{
       // tabControl显示的类型改变时
@@ -198,13 +197,6 @@
         // 使两个TabControl组件当前高亮的类型一样
         this.$refs.tabControl1.currentIndex = this.$refs.tabControl2.currentIndex = index
       },
-      // 点击回顶部按钮
-      backClick(){
-        // 不知道是什么原因，电脑端的手机模式用鼠标滚轮滑下去后点击没反应
-        // 要用鼠标模拟手机下滑页面后 点击才有效果
-        // 不是已经兼容PC端了吗
-        this.$refs.scroll.backTop(0, 0, 300 )
-      },
       // 接受Scroll的滚动事件
       scroll(position){
         // console.log(position)
@@ -216,9 +208,7 @@
         */
         this.isBackTopShow = (position.y < -1000)
 
-        /* 判断TabControl是否吸顶
-         */
-        this.isTabControlFixed = ( position.y < (-this.taboffsetTop) )
+        this.listenShowBackTop(positionY)
 
       },
       // 接受Scroll的上拉事件
@@ -290,4 +280,5 @@
     z-index: 9;
     background-color: var(--color-background);
   }
+
 </style>

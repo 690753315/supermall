@@ -12,6 +12,11 @@
       <detail-comment-info ref="DetailCommentInfo" :comment-info="commentInfo" />
       <goods-list ref="GoodsList" :goods="recommends"/>
     </scroll>
+
+    <detail-bottom-bar></detail-bottom-bar>
+
+    <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
+    <back-top @click.native="backClick" v-show="isBackTopShow"></back-top>
   </div>
 </template>
 
@@ -37,8 +42,9 @@ import DetailNavBar from 'views/detail/childComps/DetailNavBar'
   // 防抖函数
   import {debounce} from 'common/utils'
   // 混入
-  import {itemListenerMixin} from 'common/mixin'
-
+  import {itemListenerMixin, backTopMixin} from 'common/mixin'
+  // 底部工具栏
+  import DetailBottomBar from 'views/detail/childComps/DetailBottomBar'
 
   // 网络请求详情页数据  详情页商品基本信息类 店铺信息类 商品详细数据类 商品参数类 网络请求商品推荐数据
   import {getDetail, Goods, Shop, GoodsParam, getRecommend } from 'network/detail'
@@ -91,7 +97,8 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
-    GoodsList
+    GoodsList,
+    DetailBottomBar,
   },
   methods:{
     // 网络请求
@@ -190,6 +197,8 @@ export default {
           this.$refs.DetailNavBar.currentIndex = i
         }
       }
+
+      this.listenShowBackTop(positionY)
     }
   },
   updated() {
@@ -206,7 +215,7 @@ export default {
     // this.themeTopYs.push(this.$refs.DetailCommentInfo.$el.offsetTop)
     // this.themeTopYs.push(this.$refs.GoodsList.$el.offsetTop)
   },
-  mixins: [itemListenerMixin]
+  mixins: [itemListenerMixin, backTopMixin]
 }
 </script>
 
