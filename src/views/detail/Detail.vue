@@ -13,7 +13,7 @@
       <goods-list ref="GoodsList" :goods="recommends"/>
     </scroll>
 
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
 
     <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
     <back-top @click.native="backClick" v-show="isBackTopShow"></back-top>
@@ -199,6 +199,19 @@ export default {
       }
 
       this.listenShowBackTop(positionY)
+    },
+    // 加入购物车
+    addToCart(){
+      const product = {}
+      product.image = this.topImages[0]
+      product.title = this.goods.title
+      product.desc = this.goods.desc
+      product.price = this.goods.realPrice
+      product.iid = this.id
+
+      console.log( product )
+
+      this.$store.commit('addToCart', product)
     }
   },
   updated() {
@@ -215,6 +228,7 @@ export default {
     // this.themeTopYs.push(this.$refs.DetailCommentInfo.$el.offsetTop)
     // this.themeTopYs.push(this.$refs.GoodsList.$el.offsetTop)
   },
+  // 这里不要忘记写！！！
   mixins: [itemListenerMixin, backTopMixin]
 }
 </script>

@@ -44,8 +44,6 @@
     <!-- native是事件修饰符 监听组件根元素的原生事件  没加native @click无效 -->
     <back-top @click.native="backClick" v-show="isBackTopShow"></back-top>
 
-
-
   </div>
 </template>
 
@@ -64,8 +62,7 @@
   import GoodsList from 'components/content/goods/GoodsList'
   // 滚动
   import Scroll from 'components/common/scroll/Scroll'
-  // 回顶部按钮
-  import BackTop from 'components/content/backTop/BackTop'
+
   // 网络请求
   import {getHomeMultidata, getHomeGoods} from 'network/home'
   // 共通的方法：防抖函数
@@ -107,7 +104,6 @@
         isTabControlFixed: false,
         // Home组件离开时，滚动条的位置
         saveY: 0,
-
       }
     },
     components:{
@@ -123,7 +119,6 @@
       // tabControl显示的类型改变时
       showGoods(){
         return this.goods[this.currentType].list
-
       }
     },
     created(){
@@ -135,7 +130,6 @@
       this.getHomeGoods('sell')
     },
     mounted(){
-
     },
     // 组件活跃时
     activated() {
@@ -206,9 +200,7 @@
         向下滑，position.y小于0，
           所以滚动距离当超过1000时为 position.y< -1000
         */
-        this.isBackTopShow = (position.y < -1000)
-
-        this.listenShowBackTop(positionY)
+        this.listenShowBackTop(-position.y)
 
       },
       // 接受Scroll的上拉事件
@@ -230,7 +222,7 @@
         // console.log( this.$refs.tabControl2.$el.offsetTop )
       }
     },
-    mixins: [itemListenerMixin]
+    mixins: [itemListenerMixin, backTopMixin]
   }
 </script>
 
