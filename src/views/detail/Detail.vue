@@ -49,6 +49,7 @@ import DetailNavBar from 'views/detail/childComps/DetailNavBar'
   // 网络请求详情页数据  详情页商品基本信息类 店铺信息类 商品详细数据类 商品参数类 网络请求商品推荐数据
   import {getDetail, Goods, Shop, GoodsParam, getRecommend } from 'network/detail'
 
+  import {mapActions} from 'vuex'
 export default {
   name: "Detail",
   data(){
@@ -85,7 +86,7 @@ export default {
 
       this.themeTopYs.push(Number.MAX_VALUE)
 
-      console.log(this.$refs.DetailParamInfo.$el.offsetTop)
+      // console.log(this.$refs.DetailParamInfo.$el.offsetTop)
     }, 100)
   },
   components:{
@@ -200,6 +201,10 @@ export default {
 
       this.listenShowBackTop(positionY)
     },
+
+    ...mapActions({
+      addCart: 'addToCart'
+    }),
     // 加入购物车
     addToCart(){
       const product = {}
@@ -209,9 +214,9 @@ export default {
       product.price = this.goods.realPrice
       product.iid = this.id
 
-      console.log( product )
+      // console.log( product )
 
-      this.$store.commit('addToCart', product)
+      this.addCart(product).then(res => console.log(res))
     }
   },
   updated() {

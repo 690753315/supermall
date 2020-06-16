@@ -26,7 +26,7 @@ export default {
 
     /* 设置固定于底部 */
     position: fixed;
-    bottom: 0;
+    bottom: -2px;
 
     /* 设置宽度100% */
     left: 0;

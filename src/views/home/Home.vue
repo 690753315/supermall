@@ -133,10 +133,13 @@
     },
     // 组件活跃时
     activated() {
-      // 活跃时滚动条回到记录的位置
-      this.$refs.scroll.backTop(0, this.saveY, 0)
+
       // 滚动后最好刷新下，不然可能会莫名其妙回到顶部
       this.$refs.scroll.refresh()
+
+
+      // 活跃时滚动条回到记录的位置
+      this.$refs.scroll.backTop(0, this.saveY, 0)
     },
     // 组件不活跃时
     deactivated() {
